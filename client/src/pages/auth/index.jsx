@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { signInFormControls, signUpFormControls } from '@/config'
 import { AuthContext } from '@/context/auth-context'
 import { GraduationCap } from 'lucide-react'
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 export default function Authpage() {

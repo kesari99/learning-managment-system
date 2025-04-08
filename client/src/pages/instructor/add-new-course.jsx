@@ -65,9 +65,9 @@ const AddNewCoursePage = () => {
 
     }
 
-    const response = 
-    currentEditedCourseId !== null ? await updateCourseByIdService(currentEditedCourseId, courseFinalFormData) :
-    await addNewCourseService(courseFinalFormData)
+    const response =  currentEditedCourseId !== null
+        ? await updateCourseByIdService(currentEditedCourseId, courseFinalFormData)
+        : await addNewCourseService(courseFinalFormData)
     if(response?.success){
       setCourseLandingFormData(courseLandingInitialFormData)
       setCourseCurriculumFormData(courseCurriculumInitialFormData)

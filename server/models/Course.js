@@ -28,11 +28,12 @@ const CourseSchema = new mongoose.Schema({
         studentId:String,
         studentName:String,
         studentEmail:String,
-    }
+            paidAmount:String,
+    },
     ],
     curiculum:[LectureSchema],
     isPublished:Boolean,
 
-})
+}, )
 
 export const Course = mongoose.model('Course', CourseSchema)

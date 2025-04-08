@@ -26,14 +26,13 @@ function InstructorCourses({listOfCourses}) {
     <Card>
       <CardHeader className="flex justify-between flex-row items-center">
         <CardTitle className="text-3xl font-extrabold"> All Courses</CardTitle>
-        <Button onClick = {() => {
-          setCurrentEditedCourseId(null)
-          setCourseLandingFormData(courseLandingInitialFormData)
-          setCourseCurriculumFormData(courseCurriculumInitialFormData)
-          navigate('/instructor/create-new-course')
-
-        }
-        } className="p-6">Create new course</Button>
+        <Button
+            onClick = {() => {
+                  setCurrentEditedCourseId(null)
+                  setCourseLandingFormData(courseLandingInitialFormData)
+                  setCourseCurriculumFormData(courseCurriculumInitialFormData)
+                  navigate('/instructor/create-new-course')}}
+            className="p-6">Create new course</Button>
       </CardHeader>
       <CardContent className="overflow-x-auto">
       <Table>

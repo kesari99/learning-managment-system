@@ -8,9 +8,11 @@ import { fetchInstructorCourseListService } from '@/services';
 import { BarChart, Book, LogOut } from "lucide-react";
 import { useContext, useEffect, useState } from 'react';
 
-function InstructorDashboardPage() {
+function  InstructorDashboardPage() {
+
+    
     const {resetCredentials} = useContext(AuthContext)
-    const [activeTab, setActiveTab] = useState('dashboard')
+    const [activeTab, setActiveTab] = useState('dashboard ')
 
     const { instructorCourseList,
         setInstructorCourseList} = useContext(InstructorContext)
@@ -22,6 +24,8 @@ function InstructorDashboardPage() {
                 setInstructorCourseList(response.data)
             }
         }
+
+    console.log(instructorCourseList)
 
 
         useEffect(() => {

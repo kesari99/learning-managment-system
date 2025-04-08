@@ -9,6 +9,10 @@ import NotFound from "./pages/not-found";
 import InstructorDashboardPage from "./pages/instructor";
 import AddNewCoursePage from "./pages/instructor/add-new-course";
 import StudentViewCoursePage from "./pages/student/courses";
+import StudentViewCourseDetailsPage from "@/pages/student/course-details/index.jsx";
+import PaypalPaymentReturnPage from "@/pages/payment-return/index.jsx";
+import StudentCoursesPage from "@/pages/student-courses/index.jsx";
+import StudentViewCourseProgressPage from "@/pages/course-progress/index.jsx";
 
 
 export default function App() {
@@ -34,7 +38,11 @@ export default function App() {
         <Route path="" element={<StudentHomePage />} />
         <Route path="home" element={<StudentHomePage />} />
         <Route path="courses" element={<StudentViewCoursePage />} />
-       
+          <Route path="course/details/:id" element = { <StudentViewCourseDetailsPage />} />
+          <Route path="payment-return" element = { <PaypalPaymentReturnPage />} />
+          <Route path="student-courses" element = { <StudentCoursesPage />} />
+          <Route path="course-progress/:id" element = { <StudentViewCourseProgressPage />} />
+
         
       </Route>
       <Route path="*" element={<NotFound />} />

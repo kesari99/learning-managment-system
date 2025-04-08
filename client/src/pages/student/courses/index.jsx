@@ -5,33 +5,46 @@ import { DropdownMenu, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMe
 import { Label } from "@/components/ui/label"
 import { filterOptions, sortOptions } from "@/config"
 import { StudentContext } from "@/context/student-context"
-import { fetchStudentCourseListService } from "@/services"
+import {checkCoursePurchaseInfoService, fetchStudentCourseListService} from "@/services"
 import { ArrowUpDownIcon } from "lucide-react"
 import { useContext, useEffect, useState } from "react"
-import { useSearchParams } from "react-router-dom"
+import {useNavigate, useSearchParams} from "react-router-dom"
+import {Skeleton} from "@/components/ui/skeleton.jsx";
+import {AuthContext} from "@/context/auth-context/index.jsx";
 
 function StudentViewCoursePage() {
 
     const [sort, setSort] = useState('price-lowtohigh')
     const [filters, setFilters] = useState({})
     const [searchParams, setSearchParams] = useSearchParams()
+    const navigate = useNavigate()
     const { studentViewCoursesList,
-        setStudentViewCoursesList
+        setStudentViewCoursesList,
+        loading,
+        setLoading
 
     } = useContext(StudentContext)
 
-    async function fetchAllStudentViewCourses() {
-        const response = await fetchStudentCourseListService()
+    const {auth} = useContext(AuthContext)
+
+    async function fetchAllStudentViewCourses(filters , sort) {
+        const query =  new URLSearchParams({
+            ...filters,
+            sortBy: sort
+        })
+        const response = await fetchStudentCourseListService(query)
         if (response?.success) {
             setStudentViewCoursesList(response?.data)
+            setLoading(false)
         }
     }
 
 
     useEffect(() => {
-        fetchAllStudentViewCourses()
+        if (filters !== null && sort !== null)
+            fetchAllStudentViewCourses(filters, sort)
 
-    }, [])
+    }, [filters, sort])
 
 
     function handleFilterOnChange(sectionId, getCurrentOption) {
@@ -63,26 +76,71 @@ function StudentViewCoursePage() {
         sessionStorage.setItem('filters', JSON.stringify(cpyFilters))
     }
 
-    function createSearchParamsHeler(filterParams){
+    function createSearchParamsHelper(filterParams){
         const queryParams = []
+
+        for(const [key, value] of Object.entries(filterParams)){
+            if (Array.isArray(value) && value.length > 0){
+                const paramValue = value.join(',')
+                queryParams.push(`${key}=${encodeURIComponent(paramValue)}`)
+
+            }
+
+        }
+
+        return queryParams.join("&")
+
+
+    }
+
+    async function handleCourseNavigate(getCurrentCourseId){
+        const response = await checkCoursePurchaseInfoService(getCurrentCourseId, auth?.user?._id)
+        if(response?.success){
+            if(response?.data){
+                navigate(`/course-progress/${getCurrentCourseId}`)
+
+
+            }
+            else{
+                navigate(`/course/details/${getCurrentCourseId}`)
+            }
+
+
+        }
 
     }
 
     useEffect(() => {
-        const buildQueryStringForFilters = createSearchParamsHeler(filters)
+        const buildQueryStringForFilters = createSearchParamsHelper(filters)
         setSearchParams(new URLSearchParams(buildQueryStringForFilters))
     }, [filters])
+
+
+    useEffect(() => {
+        setSort("price-lowtohigh")
+        setFilters(JSON.parse(sessionStorage.getItem("filters")) || {})
+
+    }, []);
+
+    useEffect(() => {
+
+        return () => {
+            sessionStorage.removeItem("filters")
+        }
+
+
+    }, []);
 
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-3xl font-bold mb-4">All Courses</h1>
             <div className="flex flex-col md:flex-row gap-4">
                 <aside className="w-full md:w-64 space-y-4">
-                    <div className="p-4 space-y-4">
+                    <div className="">
                         {/* filters */}
                         {
                             Object.keys(filterOptions).map(keyItem => (
-                                <div className="space-y-4">
+                                <div className="p-4  border-b">
                                     <h3 className="font-bold mb-3">{keyItem.toUpperCase()}</h3>
                                     <div className="p-4 grid gap-2 mt-2">
                                         {
@@ -135,7 +193,7 @@ function StudentViewCoursePage() {
                             </DropdownMenuContent>
 
                         </DropdownMenu>
-                        <span className="text-sm text-black font-bold">10 Results</span>
+                        <span className="text-sm text-black font-bold">{`${studentViewCoursesList.length} Results`}</span>
                     </div>
 
                     <div className="space-y-4 ">
@@ -144,7 +202,7 @@ function StudentViewCoursePage() {
 
                             studentViewCoursesList && studentViewCoursesList.length > 0 ?
                                 studentViewCoursesList.map(courseItem => (
-                                    <Card key={courseItem._id} className="cursor-pointer">
+                                    <Card onClick={ () => handleCourseNavigate(courseItem._id)} key={courseItem._id} className="cursor-pointer">
                                         <CardContent className="flex gap-4 p-4" >
                                             <div className="w-48 h-32 flex-shrink-0">
                                                 <img
@@ -169,9 +227,12 @@ function StudentViewCoursePage() {
                                         </CardContent>
                                     </Card>
 
-                                )) :
+                                )) :(
 
-                                <h1>No Courses Found</h1>
+                                    loading
+                                        ? <Skeleton />
+                                        : <h1 className="font-extrabold text-4xl">No Courses Found</h1>
+                                )
                         }
                     </div>
 

@@ -5,7 +5,13 @@ import StudentViewCommonHeader from './header'
 export default function StudentViewCommonLayout() {
   return (
     <div>
-        <StudentViewCommonHeader />
+        {
+            !location.pathname.includes('course-progress') ?
+                <StudentViewCommonHeader /> : null
+
+
+        }
+
         <Outlet />
     </div>
   )
