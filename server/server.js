@@ -18,13 +18,7 @@ connectToDb()
 const app = express()
 const PORT = process.env.PORT || 5000
 
-app.use(
-    cors({
-      origin: ["http://localhost:5173","https://learning-managment-system-frontend.onrender.com"],
-      methods: "GET,POST,PUT,DELETE",
-      allowedHeaders: "Content-Type,Authorization",
-    })
-  );
+
   
 app.use(express.json())
 
