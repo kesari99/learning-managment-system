@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle } from '@/components/ui/card'
-import { CardContent } from '@mui/material'
+import { Card, CardHeader, CardTitle,CardContent } from '@/components/ui/card'
 import {
   Table,
   TableBody,
